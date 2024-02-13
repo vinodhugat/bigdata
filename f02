@@ -1,0 +1,25 @@
+# create in the hdfs files 
+# Define Flume agent named 'agent'
+agent.sources = so
+agent.sinks = si
+agent.channels = ch
+
+# Configure source to read data from a local directory
+agent.sources.so.type = netcat
+agent.sources.so.bind = localhost
+agent.sources.so.port = 22222
+
+# Configure HDFS sink to write data to HDFS with write format
+agent.sinks.si.type = hdfs
+agent.sinks.si.hdfs.path = hdfs://localhost:9000/karan/
+agent.sinks.si.hdfs.fileType = DataStream
+agent.sinks.si.hdfs.writeFormat = Text
+
+# Define memory channel
+agent.channels.ch.type = memory
+agent.channels.ch.capacity = 1000
+agent.channels.ch.transactionCapacity = 100
+
+# Bind the agent to the source and sink
+agent.sources.so.channels = ch
+agent.sinks.si.channel = ch
