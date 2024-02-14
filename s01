@@ -1,0 +1,30 @@
+# a. Load the sales_data dataset into an RDD.
+sales_rdd = sc.textFile("sales_data.csv")
+
+# b. Inspect the first 5 records of the sales_data RDD.
+sales_first_5 = sales_rdd.take(5)
+
+# c. Filter the sales_data RDD to retain records where the amount is greater than 100.
+sales_filtered = sales_rdd.filter(lambda x: float(x.split(",")[3]) > 100)
+
+# d. Map the sales_data RDD to extract only the product_name field.
+product_names = sales_rdd.map(lambda x: x.split(",")[1])
+
+# e. Apply a flatMap transformation to split the product_name by space and return individual words.
+words = product_names.flatMap(lambda x: x.split(" "))
+
+# f. Calculate the total sales amount for each category by reducing the sales_data RDD by key.
+category_total_sales = sales_rdd.map(lambda x: (x.split(",")[2], float(x.split(",")[3]))).reduceByKey(lambda a, b: a + b)
+
+# g. Sort the sales_data RDD by the amount field in descending order.
+sorted_sales = sales_rdd.map(lambda x: (x, float(x.split(",")[3]))).sortBy(lambda x: x[1], ascending=False)
+
+# h. Group the sales_data RDD by the purchase_date field.
+grouped_by_date = sales_rdd.groupBy(lambda x: x.split(",")[4])
+
+# i. Join the sales_data RDD with another RDD named revenue_data on the category field.
+revenue_rdd = sc.textFile("revenue_data.csv")
+joined_rdd = sales_rdd.map(lambda x: (x.split(",")[2], x)).join(revenue_rdd.map(lambda x: (x.split(",")[0], x)))
+
+# j. Aggregate the sales_data RDD to calculate the total sales amount.
+total_sales_amount = sales_rdd.map(lambda x: float(x.split(",")[3])).sum()
