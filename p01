@@ -1,1 +1,46 @@
+-- 1) List All employee records
+prg1 = LOAD 'location/Pdata.txt' USING PigStorage(',') AS 
+    (emp_number:int, emp_name:chararray, job_title:chararray, dept_name:chararray, 
+    experience:int, salary:int);
+dump prg1; 
+
+-- 2) List employee records in descending order of their Emp number
+e2 = ORDER prg1 BY emp_number DESC; 
+DUMP e2;
+
+-- 3) List employee records in descending order of their salaries
+e3 = ORDER prg1 BY salary DESC; 
+DUMP e3;
+
+-- 4) List employees in ascending order of job Title
+e4 = ORDER prg1 BY job_title; 
+DUMP e4;
+
+-- 5) List all the unique job titles in descending order
+q5 = FOREACH prg1 GENERATE job_title;
+q5 = DISTINCT q5;
+q5 = ORDER q5 BY job_title DESC;
+DUMP q5;
+
+-- 6) List Emp number, Emp name, Salary, Daily Salary of all Employees in ascending order of Annual Salary
+q6 = FOREACH prg1 GENERATE emp_number, emp_name, salary, (int)(salary/30) AS dsalary, (int)(salary*12) AS asalary;
+q6 = ORDER q6 BY asalary ASC; -- Ascending order of Annual Salary
+DUMP q6;
+
+-- 7) List Employees in ascending order of Job Title
+q7 = ORDER prg1 BY job_title; 
+DUMP q7;
+
+-- 8) List Employees whose daily salary is more than 100
+q8 = FILTER q6 BY dsalary > 100; -- Filter based on daily salary
+DUMP q8;
+
+-- 9) List Employees who are either 'CLERK' or 'ANALYST' in descending order
+q9 = FILTER prg1 BY job_title == 'CLERK' OR job_title == 'ANALYST'; -- Filter employees with specified job titles
+q9 = ORDER q9 BY emp_number DESC; -- Descending order of Emp number
+DUMP q9;
+
+-- 10) List Employees whose annual salary is ranging from 22000 and 45000
+q10 = FILTER q6 BY asalary >= 22000 AND asalary <= 45000; -- Filter based on annual salary range
+DUMP q10;
 
