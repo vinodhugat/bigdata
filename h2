@@ -1,0 +1,88 @@
+2.
+-- Create materialized table mm_join1 by joining mm_season with mm_teams
+CREATE TABLE IF NOT EXISTS mm_join1 AS
+SELECT mm_season.*,  -- Select all columns from mm_season table
+    teams2a.team_name AS WTEAM_NAME,  -- Alias for team_name column corresponding to winning team
+    teams2b.team_name AS LTEAM_NAME  -- Alias for team_name column corresponding to losing team
+FROM mm_season
+LEFT JOIN mm_teams teams2a ON (mm_season.wteam = teams2a.team_id)  -- Left join with mm_teams for winning team
+LEFT JOIN mm_teams teams2b ON (mm_season.lteam = teams2b.team_id);  -- Left join with mm_teams for losing team
+
+-- Query to retrieve first 10 records from mm_join1 table
+SELECT * FROM mm_join1 LIMIT 10;
+
+-- Query to count the total number of records in mm_season table
+SELECT COUNT(*) FROM mm_season;
+
+-- Query to count the total number of records in mm_teams table
+SELECT COUNT(*) FROM mm_teams;
+
+-- Query to count the total number of records in mm_join1 table
+SELECT COUNT(*) FROM mm_join1;
+
+3. 
+-- Calculate the Top 15 Teams with the most Wins
+SELECT WTEAM_NAME, COUNT(*) AS WINS 
+    FROM mm_join1 
+    GROUP BY WTEAM_NAME 
+    ORDER BY WINS DESC 
+    LIMIT 15;
+
+-- Calculate the Top 15 Teams with the most Losses
+SELECT LTEAM_NAME, COUNT(*) AS LOSSES 
+    FROM mm_join1 
+    GROUP BY LTEAM_NAME 
+    ORDER BY LOSSES DESC 
+    LIMIT 15;
+
+-- Calculate the Top 15 Matchups with the biggest score difference
+SELECT SEASON, WTEAM_NAME, WSCORE, LTEAM_NAME, LSCORE, WLOC, (WSCORE-LSCORE) AS SCORE_DIFF, CONCAT(WTEAM_NAME, " OVER ", LTEAM_NAME) AS DESCRIPTION
+    FROM mm_join1
+    ORDER BY SCORE_DIFF DESC
+    LIMIT 15;
+
+-- Select records where wteam is less than 25
+SELECT * FROM mm_join1 WHERE wteam < 25;
+
+-- Select records where wteam is greater than 25
+SELECT * FROM mm_join1 WHERE wteam > 25;
+
+-- Find the maximum score in the lscore column
+SELECT MAX(lscore) FROM mm_join1;
+
+-- Find the minimum score in the lscore column
+SELECT MIN(lscore) FROM mm_join1;
+
+-- Calculate the average score in the lscore column
+SELECT AVG(lscore) FROM mm_join1;
+
+-- Calculate the sum of scores in the lscore column
+SELECT SUM(lscore) FROM mm_join1;
+
+-- Calculate the sum of distinct scores in the lscore column
+SELECT SUM(DISTINCT lscore) FROM mm_join1;
+
+-- Sum the lscore column, grouped by id
+SELECT id, SUM(lscore) FROM mm_join1 GROUP BY id;
+
+-- Select all records from mm_join1, ordered by day
+SELECT * FROM mm_join1 ORDER BY day;
+
+-- Select all records from mm_join1, ordered by wteam in descending order
+SELECT * FROM mm_join1 ORDER BY wteam DESC;
+
+-- Group by wscore and select all columns from mm_join1
+SELECT * FROM mm_join1 GROUP BY wscore;
+
+-- Count the number of records in mm_join1, grouped by wteam
+SELECT COUNT(*) FROM mm_join1 GROUP BY wteam;
+
+-- Count the number of records in mm_join1, grouped by wteam, and display the team name (cname)
+SELECT cname, COUNT(*) FROM mm_join1 GROUP BY wteam;
+
+-- Count the number of records in mm_join1, grouped by wteam, where the count is greater than 50
+SELECT cname, COUNT(*) FROM mm_join1 GROUP BY wteam HAVING COUNT(*) > 50;
+
+-- Count the number of records in mm_join1, grouped by wteam, where the count is greater than 25
+SELECT cname, COUNT(*) FROM mm_join1 GROUP BY wteam HAVING COUNT(*) > 25;
+
