@@ -1,0 +1,47 @@
+-- to make file and upload
+hadoop fs -mkdir /u2
+hadoop fs -mkdir /u2/lab3
+hadoop fs -mkdir /u2/lab3/SeasonResults
+hadoop fs -mkdir /u2/lab3/Teams
+hadoop fs -put /tmp/SeasonResults.csv /u2/lab3/SeasonResults/
+hadoop fs -put /tmp/Teams.csv /u2/lab3/Teams/
+
+
+-- Create external table to load data from the SeasonResults directory
+CREATE EXTERNAL TABLE IF NOT EXISTS mm_season_temp
+    (id string, season string, day string, wteam string, wscore int, lteam string, lscore int, wloc string, ot string)
+    ROW FORMAT DELIMITED
+    FIELDS TERMINATED BY ","
+    LINES TERMINATED BY "\n"
+    STORED AS TEXTFILE
+    LOCATION "/u2/lab3/SeasonResults"
+    TBLPROPERTIES ("skip.header.line.count"="1");
+
+-- Create internal table to store data in ORC format
+CREATE TABLE IF NOT EXISTS mm_season
+    (id string, season string, day string, wteam string, wscore int, lteam string, lscore int, wloc string, ot string)
+    STORED AS ORC;
+
+-- Load data from external table into internal table
+INSERT OVERWRITE TABLE mm_season SELECT * FROM mm_season_temp;
+
+-- Query to retrieve first 10 records from mm_teams table
+SELECT * FROM mm_teams LIMIT 10;
+
+-- Query to count the total number of records in mm_teams table
+SELECT COUNT(*) FROM mm_teams;
+
+-- Describe the structure of mm_teams table
+DESCRIBE mm_teams;
+
+-- Create external table to load data from the Teams directory
+CREATE EXTERNAL TABLE IF NOT EXISTS mm_teams_temp
+    (team_id string, team_name string)
+    ROW FORMAT DELIMITED
+    FIELDS TERMINATED BY ","
+    LINES TERMINATED BY "\n"
+    STORED AS TEXTFILE
+    LOCATION "/u2/lab3/Teams"
+    TBLPROPERTIES ("skip.header.line.count"="1");
+
+
