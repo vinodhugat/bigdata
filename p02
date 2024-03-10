@@ -1,1 +1,47 @@
+-- 11) List Employees those are having five characters in their names
+q11 = FILTER prg1 BY SIZE(emp_name) == 5; -- Filter employees with names of five characters
+DUMP q11;
+
+-- 12) List Odd or Even Employee records based on Emp Number
+q12 = FOREACH prg1 GENERATE (CASE emp_number % 2 WHEN 0 THEN 0 WHEN 1 THEN 1 END) AS odd_even, emp_name, job_title, dept_name, experience, salary;
+DUMP q12;
+
+-- Separate odd and even employee records
+eve = FILTER q12 BY odd_even == 0; -- Filter even employee records
+DUMP eve;
+odd = FILTER q12 BY odd_even == 1; -- Filter odd employee records
+DUMP odd;
+
+-- 13) List Employee names starting with 'S' and having five characters
+q13 = FILTER prg1 BY SIZE(emp_name) == 5 AND SUBSTRING(emp_name, 0, 1) == 'S'; -- Filter employees with names starting with 'S' and having five characters
+DUMP q13;
+
+-- 14) List Employee names with 3rd character as 'R' and Four-character length
+q14 = FILTER prg1 BY SIZE(emp_name) == 5 AND SUBSTRING(emp_name, 2, 3) == 'R'; -- Filter employees with 3rd character as 'R' and four-character length
+DUMP q14;
+
+-- 15) List Employee names starting with 'S' and ending with 'J' with 5-character length
+q15 = FILTER prg1 BY SIZE(emp_name) == 5 AND STARTSWITH(emp_name, 'S') AND ENDSWITH(emp_name, 'J'); -- Filter employees with names starting with 'S', ending with 'J', and having five characters
+DUMP q15;
+
+-- 16) List employees whose salary is a 5-digit number ending with zero
+q16 = FILTER prg1 BY (salary % 10 == 0 AND (salary >= 10000 AND salary < 100000)); -- Filter employees with salary as a 5-digit number ending with zero
+DUMP q16;
+
+-- 17) List employees whose names have 'LL' characters together in their name
+q17 = FILTER prg1 BY INDEXOF(emp_name, 'LL') >= 0; -- Filter employees with 'LL' characters together in their name
+DUMP q17;
+
+-- 18) List all employees except 'President' & 'Manager' in ascending order of salaries
+q18 = FILTER prg1 BY NOT (job_title == 'MANAGER' OR job_title == 'PRESIDENT'); -- Filter employees except 'Manager' and 'President'
+q18 = ORDER q18 BY salary ASC; -- Ascending order of salaries
+DUMP q18;
+
+-- 19) List all employees who either work in 'SALES' or 'RESEARCH' Department
+q19 = FILTER prg1 BY dept_name == 'SALES' OR dept_name == 'RESEARCH'; -- Filter employees in 'SALES' or 'RESEARCH' department
+DUMP q19;
+
+-- 20) List the employees whose experience is greater than 7 years
+q20 = FILTER prg1 BY experience > 7; -- Filter employees with experience greater than 7 years
+DUMP q20;
 
