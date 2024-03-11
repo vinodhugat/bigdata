@@ -1,0 +1,12 @@
+Display customer name, Total Transactions per customer along with Total sales:
+
+-- Load the data
+data = LOAD 'your_data_file' USING PigStorage(',') AS (customer:chararray, transaction:int, sales:double);
+
+-- Group by customer and calculate total transactions and total sales
+customer_grouped = GROUP data BY customer;
+customer_summary = FOREACH customer_grouped GENERATE group AS customer_name, COUNT(data) AS total_transactions, SUM(data.sales) AS total_sales;
+
+-- Display the result
+DUMP customer_summary;
+
