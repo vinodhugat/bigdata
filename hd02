@@ -1,1 +1,30 @@
 
+# Start all Hadoop daemons
+start-all.sh
+
+# Enter Safe Mode in HDFS
+hdfs dfsadmin -safemode enter
+
+# Leave Safe Mode in HDFS
+hdfs dfsadmin -safemode leave
+
+# Check Hadoop version
+hadoop version
+
+# List files in HDFS
+hdfs dfs -ls /path/to/directory
+
+# Create a directory in HDFS
+hdfs dfs -mkdir /path/to/directory
+
+# Upload a file to HDFS
+hdfs dfs -put /path/to/local/file /path/to/hdfs/destination
+
+# Download a file from HDFS
+hdfs dfs -get /path/to/hdfs/file /path/to/local/destination
+
+# Submit a MapReduce job
+hadoop jar path/to/your/mapreduce/job.jar MainClass inputPath outputPath
+
+# Check the status of running MapReduce jobs
+mapred job -list
