@@ -1,2 +1,92 @@
 //mapper.java
 
+package problem1;
+
+import java.io.IOException;
+import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapreduce.*;
+
+public class FlightDistanceMapper extends Mapper<LongWritable, Text, IntWritable, DoubleWritable> {
+    private IntWritable dummyKey = new IntWritable(1);
+    private DoubleWritable distance = new DoubleWritable();
+
+    @Override
+    protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+        String[] tokens = value.toString().split(",");
+        // Extract the distance from the input line
+        double flightDistance = Double.parseDouble(tokens[7]);
+        // Emit dummy key with flight distance
+        distance.set(flightDistance);
+        context.write(dummyKey, distance);
+    }
+}
+
+// reducer
+package problem1;
+
+import java.io.IOException;
+import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapreduce.*;
+
+public class FlightDistanceReducer extends Reducer<IntWritable, DoubleWritable, IntWritable, DoubleWritable> {
+    private DoubleWritable totalDistance = new DoubleWritable();
+
+    @Override
+    protected void reduce(IntWritable key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
+        double sum = 0.0;
+        // Sum up all the flight distances
+        for (DoubleWritable value : values) {
+            sum += value.get();
+        }
+        // Emit the total distance
+        totalDistance.set(sum);
+        context.write(key, totalDistance);
+    }
+}
+
+//driver
+package problem1;
+
+import org.apache.hadoop.conf.*;
+import org.apache.hadoop.fs.*;
+import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapreduce.*;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class FlightDistanceDriver {
+    public static void main(String[] args) throws Exception {
+        if (args.length != 2) {
+            System.err.println("Usage: FlightDistanceDriver <input path> <output path>");
+            System.exit(-1);
+        }
+
+        // Create a configuration object
+        Configuration conf = new Configuration();
+        // Create a job object
+        Job job = Job.getInstance(conf, "Flight Distance");
+
+        // Set the jar file for the job
+        job.setJarByClass(FlightDistanceDriver.class);
+        // Set the mapper and reducer classes
+        job.setMapperClass(FlightDistanceMapper.class);
+        job.setReducerClass(FlightDistanceReducer.class);
+
+        // Set the output key and value classes
+        job.setOutputKeyClass(IntWritable.class);
+        job.setOutputValueClass(DoubleWritable.class);
+
+        // Set input and output paths
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        // Run the job and wait for completion
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}
+
+manifest
+Main-Class: problem1.FlightDistanceDriver
+
+
+
