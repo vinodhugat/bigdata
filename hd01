@@ -1,4 +1,4 @@
-# Create a file in HDF
+# Create a file in HDFS
 hadoop fs -touchz /path/to/file.txt
 
 # Copy a file from local file system to HDFS
