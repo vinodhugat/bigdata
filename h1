@@ -6,6 +6,12 @@ hadoop fs -mkdir /u2/lab3/Teams
 hadoop fs -put /tmp/SeasonResults.csv /u2/lab3/SeasonResults/
 hadoop fs -put /tmp/Teams.csv /u2/lab3/Teams/
 
+SHOW DATABASES; -- Displays a list of databases available in Hive.
+USE database_name; -- Selects a particular database for subsequent operations.
+SHOW TABLES; -- Lists all the tables in the current database.
+DESCRIBE table_name; -- Provides the structure of a table, including column names, data types, and comments.
+SHOW FUNCTIONS; -- Displays a list of available built-in functions in Hive.
+SHOW CREATE TABLE table_name; -- Shows the SQL statement used to create a specific table.
 
 -- Create external table to load data from the SeasonResults directory
 CREATE EXTERNAL TABLE IF NOT EXISTS mm_season_temp
