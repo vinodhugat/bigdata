@@ -1,1 +1,27 @@
+# Create a file in HDFS
+hadoop fs -touchz /path/to/file.txt
+
+# Copy a file from local file system to HDFS
+hadoop fs -copyFromLocal /local/path/to/file.txt /hdfs/path/
+
+# Remove a file from HDFS
+hadoop fs -rm /hdfs/path/to/file.txt
+
+# Change file permissions in HDFS (e.g., give full access to everyone)
+hadoop fs -chmod 777 /hdfs/path/to/file.txt
+
+# List files in a directory in HDFS
+hadoop fs -ls /hdfs/path/
+
+# View the contents of a file in HDFS
+hadoop fs -cat /hdfs/path/to/file.txt
+
+# Move a file within HDFS
+hadoop fs -mv /hdfs/path/source.txt /hdfs/path/destination.txt
+
+# Create a directory in HDFS
+hadoop fs -mkdir /hdfs/new_directory
+
+# Copy a file from HDFS to the local file system
+hadoop fs -copyToLocal /hdfs/path/to/file.txt /local/path/
 
