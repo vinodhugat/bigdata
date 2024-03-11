@@ -23,6 +23,19 @@ CREATE EXTERNAL TABLE IF NOT EXISTS mm_season_temp
     LOCATION "/u2/lab3/SeasonResults"
     TBLPROPERTIES ("skip.header.line.count"="1");
 
+-- general type
+CREATE TABLE table_name (
+  column1_name data_type,
+  column2_name data_type,
+  ...
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE;
+
+--load data
+LOAD DATA LOCAL INPATH '/local/path/to/data' INTO TABLE table_name;
+
 -- Create internal table to store data in ORC format
 CREATE TABLE IF NOT EXISTS mm_season
     (id string, season string, day string, wteam string, wscore int, lteam string, lscore int, wloc string, ot string)
