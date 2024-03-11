@@ -1,7 +1,24 @@
-# a. Load the sales_data dataset into an RDD.
-sales_rdd = sc.textFile("sales_data.csv")
+# Import necessary modules
+from google.colab import files
+from pyspark.sql import SparkSession
 
-# b. Inspect the first 5 records of the sales_data RDD.
+# Upload files
+uploaded = files.upload()
+
+# Create SparkSession with builder
+spark = SparkSession.builder.appName("Spark Example").getOrCreate()
+
+# Load sales_data.csv into an RDD
+sales_rdd = spark.sparkContext.textFile("sales.txt")
+
+# Load revenue_data.csv into another RDD
+revenue_rdd = spark.sparkContext.textFile("revenue.txt")
+
+# Filter out the header line
+header = sales_rdd.first()
+sales_data_rdd = sales_rdd.filter(lambda line: line != header)
+
+# Inspect the first 5 records of the sales_data RDD.
 sales_first_5 = sales_rdd.take(5)
 
 # c. Filter the sales_data RDD to retain records where the amount is greater than 100.
